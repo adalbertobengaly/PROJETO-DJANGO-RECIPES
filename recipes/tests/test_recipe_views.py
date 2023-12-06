@@ -38,7 +38,18 @@ class RecipeViewTest(TestCase):
             email='username@email.com',
         )
         recipe = Recipe.objects.create(
-
+            category=category,
+            author=author,
+            title='Recipe title',
+            description='Recipe Description',
+            slug='recipe-slug',
+            preparation_time=10,
+            preparation_time_unit='Minutes',
+            servings=5,
+            servings_unit='Portions',
+            preparation_steps='Recipe Preparation Steps',
+            preparation_steps_is_html=False,
+            is_published=True,
         )
         assert 1 == 1
 
