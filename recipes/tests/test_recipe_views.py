@@ -37,21 +37,30 @@ class RecipeViewTest(TestCase):
             password='123456',
             email='username@email.com',
         )
-        recipe = Recipe.objects.create(
+        Recipe.objects.create(
             category=category,
             author=author,
-            title='Recipe title',
+            title='Recipe Title',
             description='Recipe Description',
             slug='recipe-slug',
             preparation_time=10,
-            preparation_time_unit='Minutes',
+            preparation_time_unit='Minutos',
             servings=5,
-            servings_unit='Portions',
+            servings_unit='Porções',
             preparation_steps='Recipe Preparation Steps',
             preparation_steps_is_html=False,
             is_published=True,
         )
-        assert 1 == 1
+
+        url = reverse('recipes:home')
+        response = self.client.get(url)
+        content = response.content.decode('utf-8')
+        response_context_recipes = response.context['recipes']
+
+        self.assertIn('Recipe Title', content)
+        self.assertIn('10 Minutos', content)
+        self.assertIn('5 Porções', content)
+        self.assertEqual(len(response_context_recipes), 1)
 
     def test_recipe_category_view_function_is_correct(self):
         url = reverse('recipes:category', kwargs={'category_id': 1})
