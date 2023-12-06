@@ -31,6 +31,7 @@ class RecipeViewsTest(RecipeTestBase):
     def test_recipe_home_template_loads_recipes(self):
         # Need a recipe for this test
         self.make_recipe()
+
         url = reverse('recipes:home')
         response = self.client.get(url)
         content = response.content.decode('utf-8')
@@ -38,6 +39,19 @@ class RecipeViewsTest(RecipeTestBase):
 
         self.assertIn('Recipe Title', content)
         self.assertEqual(len(response_context_recipes), 1)
+
+    def test_recipe_home_template_dont_load_recipes_not_published(self):
+        """Test recipe when is_plublished is False dont show"""
+        # Need a recipe for this test
+        self.make_recipe(is_published=False)
+
+        url = reverse('recipes:home')
+        response = self.client.get(url)
+
+        self.assertIn(
+            '<h1>No recipes found here 😮‍💨</h1>',
+            response.content.decode('utf-8')
+        )
 
     def test_recipe_category_view_function_is_correct(self):
         url = reverse('recipes:category', kwargs={'category_id': 1})
