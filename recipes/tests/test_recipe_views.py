@@ -1,10 +1,8 @@
 from django.urls import reverse, resolve
 from recipes import views
-from unittest import skip
 from .test_recipe_base import RecipeTestBase
 
 
-@skip("WIP")
 class RecipeViewsTest(RecipeTestBase):
 
     def test_recipe_home_view_function_is_correct(self):
@@ -29,9 +27,9 @@ class RecipeViewsTest(RecipeTestBase):
             '<h1>No recipes found here 😮‍💨</h1>',
             response.content.decode('utf-8')
         )
-        self.fail("fail faz o teste falhar propositalmente")
 
     def test_recipe_home_template_loads_recipes(self):
+        # Need a recipe for this test
         self.make_recipe()
         url = reverse('recipes:home')
         response = self.client.get(url)
@@ -51,6 +49,17 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
+    def test_recipe_category_template_loads_recipes(self):
+        needed_title = 'This is a category test'
+        # Need a recipe for this test
+        self.make_recipe(title=needed_title)
+
+        url = reverse('recipes:category', args=(1,))
+        response = self.client.get(url)
+        content = response.content.decode('utf-8')
+
+        self.assertIn(needed_title, content)
+
     def test_recipe_detail_view_function_is_correct(self):
         url = reverse('recipes:recipe', kwargs={'id': 1})
         view = resolve(url)
@@ -60,3 +69,14 @@ class RecipeViewsTest(RecipeTestBase):
         url = reverse('recipes:recipe', kwargs={'id': 1000})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+
+    def test_recipe_detail_template_loads_the_correct_recipe(self):
+        needed_title = 'This is a detail page - It load one recipe'
+        # Need a recipe for this test
+        self.make_recipe(title=needed_title)
+
+        url = reverse('recipes:recipe', kwargs={'id': 1})
+        response = self.client.get(url)
+        content = response.content.decode('utf-8')
+
+        self.assertIn(needed_title, content)
