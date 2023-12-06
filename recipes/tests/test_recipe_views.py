@@ -28,3 +28,11 @@ class RecipeViewTest(TestCase):
         url = reverse('recipes:home')
         response = self.client.get(url)
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
+
+    def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
+        url = reverse('recipes:home')
+        response = self.client.get(url)
+        self.assertIn(
+            '<h1>No recipes found here 😮‍💨</h1>',
+            response.content.decode('utf-8')
+        )
