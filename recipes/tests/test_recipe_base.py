@@ -13,7 +13,7 @@ class RecipeTestBase(TestCase):
             self,
             first_name='user',
             last_name='name',
-            username='ussername',
+            username='username',
             password='123456',
             email='username@email.com',
     ):
