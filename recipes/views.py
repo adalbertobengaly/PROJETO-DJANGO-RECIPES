@@ -20,7 +20,7 @@ def home(request):
     page_object, pagination_range = make_pagination(
         request, recipes, PER_PAGE)
 
-    messages.success(request, 'Tô ligado no que tu está pesquisando!')
+    messages.info(request, 'Tô ligado no que tu está pesquisando!')
 
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_object,
