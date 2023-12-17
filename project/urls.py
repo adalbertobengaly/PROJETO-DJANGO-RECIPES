@@ -1,3 +1,4 @@
+# type: ignore
 """
 URL configuration for project project.
 
@@ -22,6 +23,7 @@ from django.conf import settings  # Mais recomendável para importar settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('recipes.urls')),
+    path('authors/', include('authors.urls')),
 ]
 
 # Configura o local personalizado das mídias e aquivos estáticos
