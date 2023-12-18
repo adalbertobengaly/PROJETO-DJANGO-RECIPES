@@ -319,14 +319,14 @@ h6 {
 
 .form-content label,
 .form-content .help-text,
-.errorList {
+.errorlist {
   display: block;
   margin: 0.5rem 0;
   font-size: 1.4rem;
   list-style-type: none;
 }
 
-.errorList {
+.errorlist {
   color: var(--color-error-dark);
 }
 
