@@ -26,6 +26,15 @@ def strong_password(password):
         )
 
 
+def already_in_use_email(email):
+    exists = User.objects.filter(email=email).exists()
+
+    if exists:
+        raise ValidationError(
+            'User e-mail is already in use', code='invalid',
+        )
+
+
 class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,6 +83,7 @@ class RegisterForm(forms.ModelForm):
         error_messages={'required': 'E-mail is required'},
         label='E-mail',
         help_text='The e-mail must be valid.',
+        # validators=[already_in_use_email],
     )
 
     password = forms.CharField(
@@ -96,6 +106,17 @@ class RegisterForm(forms.ModelForm):
             'required': 'Please, repeat your password'
         }
     )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '')
+        exists = User.objects.filter(email=email).exists()
+
+        if exists:
+            raise ValidationError(
+                'User e-mail is already in use', code='invalid',
+            )
+
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
