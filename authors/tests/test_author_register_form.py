@@ -132,3 +132,9 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         response = self.client.post(url, data=self.form_data, follow=True)
 
         self.assertIsNone(response.context['form'].errors.get('password'))
+
+    def test_send_get_request_to_registration_create_view_returns_404(self):
+        url = reverse('authors:create')
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
