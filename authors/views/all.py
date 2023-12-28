@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http.response import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
