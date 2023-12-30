@@ -10,7 +10,7 @@ class RecipeHomeViewTest(RecipeTestBase):
     def test_recipe_home_view_function_is_correct(self):
         url = reverse('recipes:home')
         view = resolve(url)
-        self.assertIs(view.func, views.home)
+        self.assertIs(view.func.view_class, views.RecipeListViewHome)
 
     def test_recipe_home_view_returns_status_code_200_Ok(self):
         url = reverse('recipes:home')

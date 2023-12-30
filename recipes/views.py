@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.http import Http404
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from utils.pagination import make_pagination
 from django.views.generic import ListView
@@ -55,6 +55,10 @@ class RecipeListViewCategory(RecipeListViewBase):
             category__id=self.kwargs.get('category_id'),
             is_published=True,
         )
+
+        if not query_set:
+            raise Http404()
+
         return query_set
 
     def get_context_data(self, *args, **kwargs):
@@ -72,37 +76,35 @@ class RecipeListViewCategory(RecipeListViewBase):
 class RecipeListViewSearch(RecipeListViewBase):
     template_name = 'recipes/pages/search.html'
 
+    def get_queryset(self, *args, **kwargs):
+        search_term = self.request.GET.get('q', '')
 
-def home(request):
-    recipes = Recipe.objects.filter(
-        is_published=True
-    ).order_by('-id')
+        if not search_term:
+            raise Http404()
 
-    page_object, pagination_range = make_pagination(
-        request, recipes, PER_PAGE)
+        query_set = super().get_queryset(*args, **kwargs)
 
-    return render(request, 'recipes/pages/home.html', context={
-        'recipes': page_object,
-        'pagination_range': pagination_range,
-    })
-
-
-def category(request, category_id):
-    recipes = get_list_or_404(
-        Recipe.objects.filter(
-            category__id=category_id,
+        query_set = query_set.filter(
+            Q(
+                Q(title__icontains=search_term) |
+                Q(description__icontains=search_term),
+            ),
             is_published=True,
-        ).order_by('-id')
-    )
+        )
+        return query_set
 
-    page_object, pagination_range = make_pagination(
-        request, recipes, PER_PAGE)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        search_term = self.request.GET.get('q', '')
+        context.update(
+            {
+                'page_title': f'Search for "{search_term}" |',
+                'search_term': search_term,
+                'additional_url_query': f'&q={search_term}',
+            }
+        )
 
-    return render(request, 'recipes/pages/category.html', context={
-        'recipes': page_object,
-        'pagination_range': pagination_range,
-        'title': f'{recipes[0].category.name} - Category | ',
-    })
+        return context
 
 
 def recipe(request, id):
@@ -111,30 +113,4 @@ def recipe(request, id):
     return render(request, 'recipes/pages/recipe-view.html', context={
         'recipe': recipe,
         'is_detail_page': True,
-    })
-
-
-def search(request):
-    search_term = request.GET.get('q', '').strip()
-
-    if not search_term:
-        raise Http404()
-
-    recipes = Recipe.objects.filter(
-        Q(
-            Q(title__icontains=search_term) |
-            Q(description__icontains=search_term),
-        ),
-        is_published=True,
-    ).order_by('-id')
-
-    page_object, pagination_range = make_pagination(
-        request, recipes, PER_PAGE)
-
-    return render(request, 'recipes/pages/search.html', {
-        'page_title': f'Search for "{search_term}" |',
-        'search_term': search_term,
-        'recipes': page_object,
-        'pagination_range': pagination_range,
-        'additional_url_query': f'&q={search_term}'
     })
