@@ -6,6 +6,7 @@ from django.shortcuts import render
 from utils.pagination import make_pagination
 from django.views.generic import ListView, DetailView
 from django.forms.models import model_to_dict
+from django.core.exceptions import ObjectDoesNotExist
 
 from recipes.models import Recipe
 
@@ -16,9 +17,17 @@ PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
 
 def theory(request, *args, **kwargs):
-    recipes = Recipe.objects.all()
-    recipes = recipes.filter(title__icontains='Bolo')
+    try:
+        recipes = Recipe.objects.get(pk=2000)
+    except ObjectDoesNotExist:
+        recipes = None
+    # recipes = Recipe.objects.all()
+    # recipes = recipes \
+    #     .filter(is_published=True) \
+    #     .order_by('-id') \
+    #     .last()
 
+    print('RECIPE ENCONTRADA', recipes)
     # list(recipes)
 
     context = {
