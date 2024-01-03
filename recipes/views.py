@@ -6,7 +6,6 @@ from django.shortcuts import render
 from utils.pagination import make_pagination
 from django.views.generic import ListView, DetailView
 from django.forms.models import model_to_dict
-from django.core.exceptions import ObjectDoesNotExist
 
 from recipes.models import Recipe
 
@@ -15,20 +14,18 @@ import os
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
+# https://docs.djangoproject.com/pt-br/4.2/ref/models/querysets/
+
 
 def theory(request, *args, **kwargs):
-    try:
-        recipes = Recipe.objects.get(pk=2000)
-    except ObjectDoesNotExist:
-        recipes = None
-    # recipes = Recipe.objects.all()
-    # recipes = recipes \
-    #     .filter(is_published=True) \
-    #     .order_by('-id') \
-    #     .last()
-
-    print('RECIPE ENCONTRADA', recipes)
-    # list(recipes)
+    recipes = Recipe.objects.filter(
+        Q(
+            Q(title__icontains='tit',
+              id__gt=2,
+              is_published=True,) |
+            Q(id__gt=1000,)
+        )
+    ).select_related('author', 'category')[:10]
 
     context = {
         'recipes': recipes
