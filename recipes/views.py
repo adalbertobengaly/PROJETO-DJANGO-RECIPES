@@ -1,7 +1,7 @@
 
 from django.http import JsonResponse
 from django.http.response import Http404
-from django.db.models import Q
+from django.db.models import Q, F
 from django.shortcuts import render
 from utils.pagination import make_pagination
 from django.views.generic import ListView, DetailView
@@ -19,13 +19,8 @@ PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
 def theory(request, *args, **kwargs):
     recipes = Recipe.objects.filter(
-        Q(
-            Q(title__icontains='tit',
-              id__gt=2,
-              is_published=True,) |
-            Q(id__gt=1000,)
-        )
-    ).select_related('author', 'category')[:10]
+        id=F('author_id'),
+    ).order_by('-id', 'title')[:1]
 
     context = {
         'recipes': recipes
