@@ -18,8 +18,9 @@ PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
 
 def theory(request, *args, **kwargs):
-    recipes = Recipe.objects \
-        .values('id', 'author__username', 'title')[:10]
+    recipes = Recipe.objects.values('id', 'title')
+    # recipes = Recipe.objects.defer('is_published')
+    # recipes = Recipe.objects.only('id', 'title')
 
     context = {
         'recipes': recipes
