@@ -12,7 +12,7 @@
     
     <ul>
         {% for recipe in recipes %}
-            <ul>{{ recipe.id }} {{ recipe.title }}</ul>
+            <ul>{{ recipe.id }} {{ recipe.title }} {{ recipe.author_full_name }}</ul>
 
         {% empty %}
             <p>No recipes found!</p>
