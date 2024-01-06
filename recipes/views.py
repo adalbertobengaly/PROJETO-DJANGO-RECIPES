@@ -9,6 +9,7 @@ from django.forms.models import model_to_dict
 from django.db.models.aggregates import Count
 
 from recipes.models import Recipe
+from tag.models import Tag
 
 import os
 
@@ -45,6 +46,7 @@ class RecipeListViewBase(ListView):
             is_published=True,
         )
         query_set = query_set.select_related('author', 'category')
+        query_set = query_set.prefetch_related('tags')
         # query_set = query_set.prefetch_related('author', 'category')
         return query_set
 
@@ -137,6 +139,33 @@ class RecipeListViewSearch(RecipeListViewBase):
                 'page_title': f'Search for "{search_term}" |',
                 'search_term': search_term,
                 'additional_url_query': f'&q={search_term}',
+            }
+        )
+
+        return context
+
+
+class RecipeListViewTag(RecipeListViewBase):
+    template_name = 'recipes/pages/tag.html'
+
+    def get_queryset(self, *args, **kwargs):
+        query_set = super().get_queryset(*args, **kwargs)
+        query_set = query_set.filter(tags__slug=self.kwargs.get('slug', ''))
+        return query_set
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        page_title = Tag.objects.filter(
+            slug=self.kwargs.get('slug', '')).first()
+
+        if not page_title:
+            page_title = 'No recipes found'
+
+        page_title = f'{page_title} - Tag |'
+
+        context.update(
+            {
+                'page_title': page_title,
             }
         )
 
