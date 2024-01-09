@@ -7,6 +7,7 @@ from utils.pagination import make_pagination
 from django.views.generic import ListView, DetailView
 from django.forms.models import model_to_dict
 from django.db.models.aggregates import Count
+from django.utils import translation
 
 from recipes.models import Recipe
 from tag.models import Tag
@@ -58,10 +59,14 @@ class RecipeListViewBase(ListView):
             context.get('recipes'),
             PER_PAGE
         )
+
+        html_language = translation.get_language()
+
         context.update(
             {
                 'recipes': page_object,
                 'pagination_range': pagination_range,
+                'html_language': html_language,
             }
         )
 
