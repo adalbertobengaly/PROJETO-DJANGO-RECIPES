@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView
 from django.forms.models import model_to_dict
 from django.db.models.aggregates import Count
 from django.utils import translation
+from django.utils.translation import gettext as _
 
 from recipes.models import Recipe
 from tag.models import Tag
@@ -28,6 +29,7 @@ def theory(request, *args, **kwargs):
         'recipes': recipes,
         'number_of_recipes': number_of_recipes['number'],
     }
+
     return render(
         request,
         'recipes/pages/theory.html',
@@ -108,9 +110,12 @@ class RecipeListViewCategory(RecipeListViewBase):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         recipes = context.get('recipes')
+        category_translation = _('Category')
+
         context.update(
             {
-                'title': f'{recipes[0].category.name} - Category | ',
+                'title': f'{recipes[0].category.name} - '
+                f'{category_translation} | ',
             }
         )
 
