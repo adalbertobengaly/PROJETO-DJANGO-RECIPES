@@ -7,12 +7,13 @@ from django.utils.text import slugify
 from django.db.models import F, Value
 from django.db.models.functions import Concat
 from tag.models import Tag
+from django.utils.translation import gettext_lazy as _
 
 
 class Category(models.Model):
     class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Categories"
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
     name = models.CharField(max_length=65)
 
@@ -34,8 +35,12 @@ class RecipeManager(models.Manager):
 
 
 class Recipe(models.Model):
+    class Meta:
+        verbose_name = _("Recipe")
+        verbose_name_plural = _("Recipes")
+
     objects = RecipeManager()
-    title = models.CharField(max_length=65)
+    title = models.CharField(max_length=65, verbose_name=_('Title'))
     description = models.CharField(max_length=165)
     slug = models.SlugField(unique=True)
     preparation_time = models.IntegerField()
