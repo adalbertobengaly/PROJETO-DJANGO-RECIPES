@@ -14,3 +14,6 @@ USE_TZ = True
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
+
+# python manage.py makemessages -l "pt_BR" -i 'venv'
+# python manage.py compilemessages -l "pt_BR" -i 'venv'
