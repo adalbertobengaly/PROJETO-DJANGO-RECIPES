@@ -22,10 +22,7 @@ def recipe_api_list(request):
             context={'request': request},
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save(
-            author_id=1, category_id=1,
-            tags=[1, 2]
-        )
+        serializer.save()
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED
@@ -33,18 +30,36 @@ def recipe_api_list(request):
             
 
 
-@api_view()
+@api_view(http_method_names=['get', 'patch', 'delete'])
 def recipe_api_detail(request, pk):
     recipe = get_object_or_404(
         Recipe.objects.get_published(),
         pk=pk
     )
-    serializer = RecipeSerializer(
-        instance=recipe, 
-        many=False,
-        context={'request': request}
+    if request.method == 'GET':
+        serializer = RecipeSerializer(
+            instance=recipe, 
+            many=False,
+            context={'request': request}
+            )
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        serializer = RecipeSerializer(
+            instance=recipe, 
+            data=request.data,
+            many=False,
+            context={'request': request},
+            partial=True,
         )
-    return Response(serializer.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            serializer.data,
+        )
+    elif request.method == 'DELETE':
+        recipe.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view()
 def tag_api_detail(request, pk):
