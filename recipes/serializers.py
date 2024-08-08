@@ -54,10 +54,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         return super_validate
     
     
-    def validate_title(self, value):
-        title = value
+    def save(self, **kwargs):
+        return super().save(**kwargs)
 
-        if len(title) < 5:
-            raise serializers.ValidationError('Must have at least 5 chars.')
+    def create(self, validated_data):
+        return super().create(validated_data)
 
-        return title
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+    
