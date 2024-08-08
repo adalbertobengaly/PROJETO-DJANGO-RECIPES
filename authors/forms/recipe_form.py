@@ -3,7 +3,8 @@ from collections import defaultdict
 from django import forms
 from recipes.models import Recipe
 from utils.django_forms import add_attr
-from utils.strings import is_positive_number
+from authors.validators import AuthorRecipeValidator
+from django.core.exceptions import ValidationError
 
 
 class AuthorRecipeForm(forms.ModelForm):
@@ -50,46 +51,5 @@ class AuthorRecipeForm(forms.ModelForm):
 
     def clean(self, *args, **kwargs):
         super_clean = super().clean(*args, **kwargs)
-        cleaned_data = self.cleaned_data
-
-        title = cleaned_data.get('title')
-        description = cleaned_data.get('description')
-
-        if title == description:
-            self._my_errors['title'].append(
-                'Cannot be the same as the description')
-            self._my_errors['description'].append(
-                'Cannot be the same as the title')
-
-        if self._my_errors:
-            raise forms.ValidationError(self._my_errors)
-
+        AuthorRecipeValidator(self.cleaned_data, ErrorClass=ValidationError)
         return super_clean
-
-    def clean_title(self):
-        title = self.cleaned_data.get('title')
-
-        if len(title) < 5:
-            self._my_errors['title'].append('Must have at least 5 chars.')
-
-        return title
-
-    def clean_preparation_time(self):
-        field_name = 'preparation_time'
-        field_value = self.cleaned_data.get(field_name)
-
-        if not is_positive_number(field_value):
-            self._my_errors[field_name].append(
-                'Must be a positive number')
-
-        return field_value
-
-    def clean_servings(self):
-        field_name = 'servings'
-        field_value = self.cleaned_data.get(field_name)
-
-        if not is_positive_number(field_value):
-            self._my_errors[field_name].append(
-                'Must be a positive number')
-
-        return field_value
