@@ -17,7 +17,7 @@ class RecipeAPIv2ViewSet(ModelViewSet):
     serializer_class = RecipeSerializer
     pagination_class = RecipeAPIv2Pagination
 
-    def patch(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
         recipe = self.get_queryset().filter(pk=pk).first()
         serializer = RecipeSerializer(
@@ -29,7 +29,6 @@ class RecipeAPIv2ViewSet(ModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        print('\n\n\nMUDEI O PARTIAL PATCH\n\n\n')
         return Response(
             serializer.data,
         )
