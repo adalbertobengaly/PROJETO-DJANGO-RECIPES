@@ -1,29 +1,21 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from recipes.models import Recipe
 from recipes.serializers import RecipeSerializer, TagSerializer
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from tag.models import Tag
 
 
 class RecipeAPIv2Pagination(PageNumberPagination):
-    page_size = 4
+    page_size = 2
 
 
-class RecipeAPIv2List(ListCreateAPIView):
+class RecipeAPIv2ViewSet(ModelViewSet):
     queryset = Recipe.objects.get_published()
     serializer_class = RecipeSerializer
     pagination_class = RecipeAPIv2Pagination
-            
-
-class RecipeAPIv2Detail(RetrieveUpdateDestroyAPIView):
-    queryset = Recipe.objects.get_published()
-    serializer_class = RecipeSerializer
-    pagination_class = RecipeAPIv2Pagination
-    
 
     def patch(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
@@ -41,7 +33,7 @@ class RecipeAPIv2Detail(RetrieveUpdateDestroyAPIView):
         return Response(
             serializer.data,
         )
-    
+
 
 
 @api_view()
