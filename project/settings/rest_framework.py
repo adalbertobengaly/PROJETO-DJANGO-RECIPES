@@ -7,6 +7,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),   
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer', # Desativa Browsable API
+    ),
 }
 
 
@@ -16,5 +19,4 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
     "SIGNING_KEY": os.environ.get('SECRET_KEY_JWT', 'INSECURE'),
     "AUTH_HEADER_TYPES": ("Bearer",),
-    
 }
