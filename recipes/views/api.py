@@ -62,8 +62,6 @@ class RecipeAPIv2ViewSet(ModelViewSet):
         return super().get_permissions()
     
     def list(self, request, *args, **kwargs):
-        print('\n\nREQUEST', request.user)
-        print(request.user.is_authenticated, '\n\n')
         return super().list(request, *args, **kwargs)
     
     # def create(self, request, *args, **kwargs):
