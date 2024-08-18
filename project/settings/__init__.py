@@ -14,11 +14,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from .environment import *  # isort:skip
 from .installed_apps import *  # isort:skip
 from .middlewares import *  # isort:skip
-from .templates import *
+
 from .assets import *
+from .cors_headers import *
 from .databases import *
-from .security import *
 from .i18n import *
 from .messages import *
+from .security import *
+from .templates import *
+
 from .debug_toolbar import *  # isort:skip
 from .rest_framework import * # isort:skip
